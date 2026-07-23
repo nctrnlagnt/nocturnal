@@ -36,10 +36,11 @@ automatically.
 
 ### Available skills
 
-Skills live in two locations:
+Skills live in three locations:
 
-- `~/.nocturnal/skills/` — project-specific skills
-- `~/.agents/skills/` — globally installed skills
+- `~/.nocturnal/skills/` — instance-local skills (NOCTURNAL_HOME; includes shipped skills such as product docs)
+- `~/.agents/skills/` — user-global skills
+- `<project>/.agents/skills/` — project-local skills
 
 Example skills include:
 
@@ -98,7 +99,7 @@ for the full config schema.
 ### Installing skills
 
 Skills are directory-based. To install one, place it in `~/.agents/skills/`
-(global) or `~/.nocturnal/skills/` (project-local):
+(user-global) or `~/.nocturnal/skills/` (instance-local):
 
 ```
 ~/.agents/skills/

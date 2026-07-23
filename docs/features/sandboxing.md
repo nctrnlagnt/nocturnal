@@ -44,14 +44,28 @@ Control which directories agents can write to:
 project:
   allowed_write_dirs:
     - .
-    - ~/.agent-tui
-    - /run
 ```
 
 - `.` — the project directory (always recommended)
-- Additional paths as needed for your workflow
+- Additional project paths as needed for your workflow
 
-Agents can read anywhere the sandbox permits but can only write to listed directories.
+Agents can read anywhere the sandbox permits but can only write to listed
+directories, plus product default infrastructure paths (package caches, build
+outputs like `target`/`node_modules`, tool state dirs). Those defaults apply
+when `system_write_dirs` is unset so restricted agents can still run tests.
+Setting `system_write_dirs` fully replaces the default list.
+
+#### Workspace and the home-directory warning
+
+`server.workspace` selects the path used for new sessions without an
+explicit CWD. Because `allowed_write_dirs` defaults to `["."]`, the
+chosen workspace is also the effective project boundary for those
+sessions.
+
+Setting the workspace to the server's home directory is allowed but
+the server surfaces a warning in the onboarding status bar: project-level
+agents would then be able to write anywhere in home. A dedicated
+projects directory (e.g. `prog` or `work/projects`) is safer.
 
 ## Usage
 

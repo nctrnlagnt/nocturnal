@@ -62,7 +62,7 @@ desktop relaunches itself.
 You can run the installer manually any time:
 
 ```bash
-curl -fsSL https://nocturnal-agent.dev/install.sh | bash
+curl -fsSL https://nctrnl.dev/install | bash
 ```
 
 A manual run behaves the same way as `/upgrade`, including the
@@ -91,7 +91,7 @@ previous version.
 No configuration is required. Upgrade behaviour is automatic:
 
 - The release URL is compiled into the binary. Default:
-  `https://nocturnal-agent.dev/releases`.
+  `https://nctrnl.dev/releases`.
 - The version to install is `latest` by default. To pin a specific
   version, set `NOCTURNAL_VERSION=<version>` in the environment before
   triggering the upgrade.
@@ -100,7 +100,7 @@ No configuration is required. Upgrade behaviour is automatic:
 
 | Environment variable | Default | Effect |
 |---|---|---|
-| `RELEASE_BASE` | `https://nocturnal-agent.dev/releases` | Base URL for release tarballs |
+| `RELEASE_BASE` | `https://nctrnl.dev/releases` | Base URL for release tarballs |
 | `NOCTURNAL_VERSION` | `latest` | Version to install |
 
 These variables are also respected by `install.sh` when run manually.

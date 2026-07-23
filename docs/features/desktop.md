@@ -37,6 +37,11 @@ first time you click it on a fresh install, the desktop offers a one-click
 installer; the streaming model downloads in the background and dictation
 starts working as soon as it lands.
 
+**Ambient companion.** Global Ask Desktop / Dictate hotkeys, tray
+residence, spoken replies, and the `main:desktop` session are covered in
+[Desktop Companion](./desktop-companion.md). GUI control goes through
+[Computer Use](./computer-use.md).
+
 ## Configuration
 
 ### Server discovery
@@ -69,7 +74,7 @@ configured separately.
 
 ### First launch
 
-1. Install the CLI: `curl -fsSL https://nocturnal-agent.dev/install.sh | bash`
+1. Install the CLI: `curl -fsSL https://nctrnl.dev/install | bash`
 2. Install the desktop: re-run the same installer (it detects a fresh
    desktop install) or open the desktop archive you downloaded from the
    GitHub release.
@@ -109,6 +114,9 @@ Click the mic in the composer (or press `Ctrl+D` / `Cmd+D`) to start
 recording. Text streams live into the composer as you speak — partial
 phrases land on their own line. Press the key again (or `Escape`) to
 stop. The first click on a fresh install opens the parakeet installer.
+
+System-wide Dictate and screen-aware Ask Desktop are separate global
+shortcuts documented in [Desktop Companion](./desktop-companion.md).
 
 ### Self-update
 

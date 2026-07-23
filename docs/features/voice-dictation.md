@@ -3,6 +3,11 @@
 Push-to-talk speech-to-text in the composer. Speak into your microphone
 and the transcribed text streams live into the input area at your cursor.
 
+This page covers **composer** dictation only. System-wide Dictate (paste
+into any focused app) and Ask Desktop (speech plus screenshots to the
+desktop companion session) are documented in
+[Desktop Companion](./desktop-companion.md).
+
 ## How to start recording
 
 ### TUI

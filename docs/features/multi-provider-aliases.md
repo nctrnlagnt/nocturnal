@@ -139,6 +139,22 @@ restricted:
 This means every target row uses the same GUI control: the user chooses either a
 provider/model or an existing alias, stored as `alias/<name>`.
 
+## Model Catalog
+
+Every valid configured alias is a first-class entry in `ListAllModels` and the
+`ModelsChanged` event. Its wire identity is `provider: "alias"`, `id: <name>`,
+and `alias_targets` contains the resolved concrete targets in config order.
+
+Provider discovery does not control alias membership. An alias remains visible
+when a provider is unauthenticated, its model endpoint is unavailable, or a
+configured model id is missing from the provider response. Provider models and
+aliases may therefore be inspected and repaired independently; `/reload` is not
+required to make configured aliases appear.
+
+Alias rows do not copy pricing or context limits from one target because a
+multi-target alias can execute against a different provider after failover.
+Runtime displays use the concrete provider/model reported by session status.
+
 ## How it works
 
 **Session start.** When a session uses `alias/smart`, the server resolves alias

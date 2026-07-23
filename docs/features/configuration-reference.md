@@ -40,7 +40,7 @@ server:
 | `worker_threads` | integer | `8` | Number of internal worker threads for the server. The server is I/O-bound, so 8 suffices even on high-core machines. |
 | `max_spawn_depth` | integer | none (unlimited) | Maximum spawn depth for ephemeral agents. Agents at or beyond this depth cannot use `sessions_spawn`. |
 | `max_session_concurrency` | integer | none (unlimited) | Maximum concurrent child sessions per parent. Limits sub-agent parallelism to reserve provider concurrency. |
-| `workspace` | string | `$HOME` | Default working directory for sessions created without explicit cwd. |
+| `workspace` | string | unset | Default working directory on the server for sessions created without explicit cwd. Accepts absolute, `~/...`, or home-relative paths. Set during first-run onboarding (TUI/Dialog or Desktop/Settings). Required for plugin-created sessions (Telegram, Discord, cron) that don't supply a path. Stored as home-relative when under `$HOME` (e.g. `prog`), else absolute. |
 | `suppress_include_markers` | bool | `true` | Suppress `[Included file: ...]` markers in `@include` processed content. |
 
 ---
@@ -204,19 +204,24 @@ Project-level settings control write access restrictions.
 project:
   allowed_write_dirs:
     - .
-    - ~/.agent-tui
-    - /run
+  # system_write_dirs:           # optional; omit to use product defaults
+  #   - ~/.cargo
+  #   - target
 ```
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `allowed_write_dirs` | string list | none | Directories agents may write to (relative to project root). `None` = no system-level restriction. `[]` = read-only. |
+| `allowed_write_dirs` | string list | `["."]` | Directories agents may write to (relative to project root). Unset uses product default `["."]`. `[]` = read-only. |
+| `system_write_dirs` | string list | product defaults | Infrastructure/build paths always merged into effective write restrictions at runtime (caches, tool dirs, `target`, etc.). Unset uses product defaults; setting the list fully replaces them. `[]` means no system paths. |
 
 ### Semantics
 
-- `None` (not set): No system-level restriction; agents use their own write policies
-- `Some([])` (empty list): Read-only by default
-- `Some(["src", "tests"])`: Only listed directories writable
+- `allowed_write_dirs` unset: product default `["."]` (agents restricted to project directory; system paths still merged)
+- `allowed_write_dirs` `[]` (empty list): read-only by default (system paths still merged)
+- `allowed_write_dirs` `["src", "tests"]`: only listed directories writable (plus system paths)
+- `system_write_dirs` unset: product defaults (cargo/npm/go caches, `target`, `node_modules`, `build`, tool state dirs, …)
+- `system_write_dirs` set: full replacement of the default list
+- `system_write_dirs` are never persisted to session `.meta.json`; they are re-merged at runtime
 
 ---
 
@@ -461,8 +466,7 @@ defaults:
 project:
   allowed_write_dirs:
     - .
-    - ~/.agent-tui
-    - /run
+  # system_write_dirs omitted → product defaults (caches, build dirs, tool state)
 
 sandbox:
   enabled: true

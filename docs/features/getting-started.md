@@ -14,12 +14,34 @@ and running your first session.
 The installer does not need root and does not modify anything outside
 your home directory by default.
 
+## Setup requirements
+
+A working install needs three things, in this order:
+
+1. **A usable provider.** Either an env var like `ANTHROPIC_API_KEY`,
+   `OPENAI_API_KEY`, or `GOOGLE_API_KEY` in your shell, or the same key
+   in `~/.nocturnal/secrets/.env`. See [Configure a provider](#configure-a-provider).
+2. **A default model.** Either set `defaults.provider` and `defaults.model` in
+   `~/.nocturnal/config.yaml` (the server synthesizes an `alias/default`
+   that the model picker can route through), or pick a model manually
+   in the settings UI. The TUI's onboarding dialog handles this
+   automatically after a provider is connected.
+3. **A server workspace.** A directory path on the machine running
+   `nocturnal serve`. New sessions use this when no project is
+   specified. Set via the TUI onboarding workspace step, the desktop's
+   Settings → General, or `config.set server.workspace <path>`. The
+   path must point to an existing directory.
+
+The TUI and Desktop both auto-open their onboarding dialogs on first
+launch if any step is missing. The installer remains non-interactive;
+clients prompt for missing setup after connect.
+
 ## Install
 
 ### One-line installer (recommended)
 
 ```bash
-curl -fsSL https://nocturnal-agent.dev/install.sh | bash
+curl -fsSL https://nctrnl.dev/install | bash
 ```
 
 The installer:
@@ -145,7 +167,7 @@ The desktop app (Linux and macOS) is included by the installer by default.
 If you want a CLI/TUI-only install, pass `--tui-only`:
 
 ```bash
-curl -fsSL https://nocturnal-agent.dev/install.sh | bash -s -- --tui-only
+curl -fsSL https://nctrnl.dev/install | bash -s -- --tui-only
 ```
 
 The desktop launches the same `nocturnal` binary it finds on `PATH` and

@@ -2,7 +2,7 @@
 
 ## What
 
-Nocturnal supports multiple LLM providers simultaneously. You can configure OpenAI-compatible, Anthropic-compatible, Google-compatible, and OpenAI Responses API-compatible providers — including ChatGPT OAuth via the `openai-responses-compatible` type. All providers are defined in `~/.nocturnal/config.yaml`. Each provider
+Nocturnal supports multiple LLM providers simultaneously. You can configure OpenAI-compatible, Anthropic-compatible, Google-compatible, and OpenAI Responses API-compatible providers — including OAuth-backed Codex and xAI SuperGrok providers via the `openai-responses-compatible` type. All providers are defined in `~/.nocturnal/config.yaml`. Each provider
 declares an `api_key_env_var` slot — the name of the env var that holds
 its key — and the actual key value lives in `~/.nocturnal/secrets/.env` or
 the process environment. `config.yaml` never holds a literal key.
@@ -18,7 +18,7 @@ Provider types determine how requests are formatted and which API protocol is us
 | `openai-compatible` | OpenAI Chat Completions API |
 | `anthropic-compatible` | Anthropic Messages API |
 | `google` | Google Generative AI API |
-| `openai-responses-compatible` | OpenAI Responses API (used for ChatGPT OAuth) |
+| `openai-responses-compatible` | OpenAI Responses API (used for Codex OAuth and xAI SuperGrok OAuth) |
 
 ## Configuration
 
@@ -39,7 +39,16 @@ providers:
   openai-codex:
     type: openai-responses-compatible
     base_url: https://chatgpt.com/backend-api/codex
-    api_key_env_var: OPENAI_API_KEY
+
+  xai-supergrok:
+    type: openai-responses-compatible
+    base_url: https://api.x.ai/v1
+    auth:
+      type: oauth
+      token_file: grok-auth.json
+      client_id: b1a00492-073a-47ea-816f-4c329264a828
+      issuer: https://auth.x.ai
+      token_endpoint: https://auth.x.ai/oauth2/token
 
 defaults:
   provider: anthropic
@@ -56,6 +65,31 @@ defaults:
 | `default_model` | No | Model to use when no model is specified for this provider |
 | `api_path` | No | API path appended to `base_url`. Defaults to `/v1` for OpenAI-compatible, empty for Anthropic-compatible |
 | `models` | No | List of models with `id` and `name` fields, overriding the provider's default model list |
+
+### OAuth providers
+
+OAuth providers store their tokens in `~/.nocturnal/secrets/`. Sign in from
+the desktop Providers settings row or with `/auth login <provider>` in the
+TUI. Check status with `/auth status` and remove a token with
+`/auth logout <provider>`.
+
+Supported OAuth login providers:
+
+| Auth provider | Config provider | Login flow | Remote/headless behavior |
+|---------------|-----------------|------------|--------------------------|
+| `codex` | `openai-codex` | Browser PKCE callback | Copy the auth URL to a logged-in browser, then paste the final redirect URL back with `/auth callback codex <url>` if the local callback cannot complete. |
+| `grok` | `xai-supergrok` | xAI device code | Copy the verification URL to any logged-in browser and approve it. No callback URL paste is needed; Nocturnal polls xAI until approval completes. |
+
+The xAI SuperGrok flow uses xAI's OIDC-discovered `/oauth2/*` endpoints:
+`https://auth.x.ai/oauth2/device/code` for the device code and
+`https://auth.x.ai/oauth2/token` for token polling and refresh. The browser URL
+is also written to `~/.nocturnal/secrets/grok-auth-url.txt` so it can be copied
+from SSH or another headless environment.
+
+Codex remains on Nocturnal's existing PKCE callback path. OpenAI also has a
+Codex-specific device-auth API, but it is not the standard OAuth device-code
+grant used by xAI; see `issues/codex-deviceauth-flow.md` for the planned
+enhancement.
 
 ### Defaults
 
